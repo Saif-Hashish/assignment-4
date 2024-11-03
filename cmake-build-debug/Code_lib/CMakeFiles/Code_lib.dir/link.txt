@@ -1,0 +1,2 @@
+"S:\Clion\CLion 2024.2.1\bin\mingw\bin\ar.exe" qc libCode_lib.a CMakeFiles/Code_lib.dir/BST.cpp.obj CMakeFiles/Code_lib.dir/Dictionary.cpp.obj
+"S:\Clion\CLion 2024.2.1\bin\mingw\bin\ranlib.exe" libCode_lib.a
