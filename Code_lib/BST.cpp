@@ -2,9 +2,9 @@
  * WARNING: Please do not remove or modify this comment block.
  *
  * Student Information:
- * Name: ______________________________________
- * Student ID: __________________________________
- * Section Number: ______________________________
+ * Name: Saifeldin Rashed Hashish
+ * Student ID: 900233247
+ * Section Number: 1
  *
  * Instructions:
  * - Fill out your name, student ID, and section number above.
@@ -15,6 +15,7 @@
 
 #include "BST.h"
 #include <iomanip> // Required for 'setw'
+#include <queue>
 
 using namespace std;
 
@@ -51,9 +52,17 @@ template<typename T>
 void BST<T>::destroyTree(Node* node) {
     // Student Task: Implement the destroyTree function
     // TODO: 1. Check if `node` is not `nullptr`. If it is, there is nothing to delete.
-    // TODO: 2. Recursively call `destroyTree` on the `left` child of `node`.
-    // TODO: 3. Recursively call `destroyTree` on the `right` child of `node`.
-    // TODO: 4. Delete the `node` to free up its memory.
+    if (node == nullptr) {
+        return;
+    }
+    else {
+        // TODO: 2. Recursively call `destroyTree` on the `left` child of `node`.
+        destroyTree(node->left);
+        // TODO: 3. Recursively call `destroyTree` on the `right` child of `node`.
+        destroyTree(node->right);
+        // TODO: 4. Delete the `node` to free up its memory.
+        delete node;
+    }
 }
 
 // Student Task: Implement the copyTree function (Private)
@@ -68,10 +77,17 @@ template<typename T>
 typename BST<T>::Node* BST<T>::copyTree(const Node* node) {
     // Student Task: Implement the copyTree function
     // TODO: 1. Check if `node` is `nullptr`. If it is, return `nullptr` because there is no node to copy.
+    if (node == nullptr) {
+        return nullptr;
+    }
     // TODO: 2. Create a new `Node` using the data from the current `node`.
+    Node * newNode = new Node(node->data);
     // TODO: 3. Recursively call `copyTree` on the `left` child of `node` and assign it to `newNode->left`.
+    newNode->left = copyTree(node->left);
     // TODO: 4. Recursively call `copyTree` on the `right` child of `node` and assign it to `newNode->right`.
+    newNode->right = copyTree(node->right);
     // TODO: 5. Return the `newNode`, which now has its own left and right children copied.
+    return newNode;
 }
 
 // Student Task: Implement the insert function (Private)
@@ -87,9 +103,22 @@ template<typename T>
 typename BST<T>::Node* BST<T>::insert(Node* node, const T& value) {
     // Student Task: Implement the insert function
     // TODO: 1. Check if `node` is `nullptr`. If it is, create a new `Node` with `value` and return it.
+    if (node == nullptr) {
+        Node * newNode = new Node(value);
+        return newNode;
+    }
     // TODO: 2. If `value` is less than `node->data`, recursively call `insert` on `node->left`.
+    else if (value < node->data) {
+      node->left =  insert(node->left, value);
+    }
     // TODO: 3. If `value` is greater than `node->data`, recursively call `insert` on `node->right`.
+    else if (value > node->data) {
+       node->right = insert(node->right, value);
+    }
+
     // TODO: 4. Return `node` to maintain the links and structure of the tree.
+        return node;
+
 }
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.
@@ -109,7 +138,14 @@ template<typename T>
 bool BST<T>::empty() const {
     // Student Task: Implement the empty function
     // TODO: 1. Check if `root` is `nullptr`. If it is, return `true`.
+    if (root == nullptr) {
+        return true;
+    }
     // TODO: 2. If `root` is not `nullptr`, return `false` because the tree has elements.
+    else {
+        return false;
+    }
+
 }
 
 // Student Task: Implement the search function (Private)
@@ -122,6 +158,21 @@ typename BST<T>::Node* BST<T>::search(Node* node, const T& value) const {
     // Student Task: Implement the search function
     // TODO: Determine when to stop the search and return the `node`.
     // TODO: Use comparisons to decide whether to search the left or right subtree.
+
+    //while tree is not empty do the following
+    while (node != nullptr) {
+        // if what we are searching for the same as node value return the value
+        if (value == node->data)
+            return node;
+        else if (value < node->data)
+            //if value is smaller than current node traverse to left of tree
+            return search(node->left, value);
+        else
+            //if value is bigger than current node traverse to right of tree
+            return search(node->right, value);
+    }
+    //if tree is empty or did not find what we are looking for
+    return nullptr;
 }
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.
@@ -141,8 +192,18 @@ bool BST<T>::retrieve(Node* node, const T& value, T& result) const {
     // Student Task: Implement the retrieve function
     // TODO: Use the search function to find the node containing `value`.
     // TODO: If the value is found, store it in `result` and indicate success.
-    // TODO: If the value is not found, return an appropriate result.
-}
+
+        if (search(node,value) != nullptr ) {
+            result = search(node,value)->data;
+            return true;
+        }
+        // TODO: If the value is not found, return an appropriate result.
+        else {
+            return false;
+        }
+    }
+
+
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.
 // This function is complete, and no further changes are necessary.
@@ -160,6 +221,18 @@ template<typename T>
 void BST<T>::inOrderTraversal(Node* node) const {
     // Student Task: Implement the inOrderTraversal function
     // TODO: Decide how to use recursion to visit nodes in the correct order.
+    // Base case If tree is empty exit the function
+    if (node == nullptr) {
+        return;
+    }
+    // Traverse the left subtree
+    inOrderTraversal(node->left);
+
+    //  Visit the current node
+    cout << node->data << endl;
+
+    // Traverse the right subtree
+    inOrderTraversal(node->right);
     // TODO: Make sure that elements are printed in a way that maintains the natural ordering of the tree.
 }
 
@@ -180,6 +253,21 @@ void BST<T>::preOrderTraversal(Node* node) const {
     // Student Task: Implement the preOrderTraversal function
     // TODO: Determine how to use recursion to visit nodes in the pre-order sequence.
     // TODO: Ensure the elements are processed in the correct order to reflect the pre-order traversal method.
+
+    // Base case, If tree is empty exit the function
+    if (node == nullptr) {
+        return;
+    }
+
+    //  Visit the current node
+    cout << node->data << endl;
+
+    // Traverse the left subtree
+    preOrderTraversal(node->left);
+
+
+    // Traverse the right subtree
+    preOrderTraversal(node->right);
 }
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.
@@ -198,7 +286,34 @@ template<typename T>
 void BST<T>::levelOrderTraversal(Node* node) const {
     // Student Task: Implement the levelOrderTraversal function
     // TODO: Use a suitable data structure to manage nodes as you process them level by level.
-    // TODO: Ensure that each node is visited once, starting from the root, then moving across each level.
+    // if tree is empty exit the function
+    if (node == nullptr) {
+        return;
+    }
+    else {
+        // if tree is not empty create a queue and push the root
+        queue<Node*> nodequeue;
+        nodequeue.push(root);
+        // while queue is not empty
+        while (!nodequeue.empty()) {
+            // visit the front node and copy its data
+            Node* node = nodequeue.front();
+            // print out front node's data
+            cout << node->data << endl;
+            // remove it from queue
+            nodequeue.pop();
+            // add left child to queue if exists
+            if (node->left != nullptr) {
+                nodequeue.push(node->left);
+            }
+            // add right child to queue if exists
+            if (node->right != nullptr) {
+                nodequeue.push(node->right);
+            }
+        }
+
+        // TODO: Ensure that each node is visited once, starting from the root, then moving across each level.
+    }
 }
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.
@@ -217,7 +332,22 @@ template<typename T>
 typename BST<T>::Node* BST<T>::findMin(Node* node) {
     // Student Task: Implement the findMin function
     // TODO: Use the properties of the BST to locate the minimum value node starting from `node`.
-    // TODO: Make sure the function returns the node containing the smallest value.
+    // if tree is empty return null pointer
+    if (node == nullptr) {
+        return nullptr;
+    }
+    else {
+        // create a node that stores the smallest value 
+        Node *minNode = node;
+        // while current node has children smaller than it keep going left
+        while (minNode->left != nullptr) {
+            minNode = minNode->left;
+        }
+        // we stop at leftmost element which is the smallest one
+        // TODO: Make sure the function returns the node containing the smallest value.
+        return minNode;
+
+    }
 }
 
 // Student Task: Implement the remove function (Private)
@@ -229,11 +359,55 @@ template<typename T>
 typename BST<T>::Node* BST<T>::remove(Node* node, const T& value) {
     // Student Task: Implement the remove function
     // TODO: Determine how to find the node with the specified `value` in the tree.
-    // TODO: Think about how to handle the different cases:
-    // - When the node is a leaf (no children).
-    // - When the node has one child.
-    // - When the node has two children.
-    // TODO: Make sure that the BST properties are maintained after the node is removed.
+    // if tree is empty return node
+    if (node == nullptr) {
+        return node;
+    }
+    // see where is the value we want to delete
+    // if less
+    if (value < node->data) {
+        // go left subtree
+        node->left = remove(node->left, value);
+        // if bigger
+    } else if (value > node->data) {
+        // go right subtree
+        node->right = remove(node->right, value);
+        // if it is equal then we found node we want to delete
+    } else {
+        // TODO: Think about how to handle the different cases:
+        // - When the node is a leaf (no children).
+        // - When the node has one child.
+        // - When the node has two children.
+        // TODO: Make sure that the BST properties are maintained after the node is removed.
+        // if node has no left child
+        if (node->left == nullptr) {
+            // store right child
+            Node *temp = node->right;
+            // delete current node
+            delete node;
+            // return the right child even if it is null
+            return temp;
+            // node has no right child
+        } else if (node->right == nullptr) {
+            //store left child
+            Node *temp = node->left;
+            //delete current node
+            delete node;
+            // return left child even if it is null
+            return temp;
+        } else {
+            // node has 2 children
+            // find min node in right subree
+            Node *temp = findMin(node->right);
+            //replace current node data with minimum nodes data
+            node->data = temp->data;
+            // remoeve the duplicate minimum node  from right subree
+            node->right = remove(node->right, node->data);
+        }
+
+    }
+    //return node
+    return node;
 }
 
 // Note for Students: Do NOT modify this function. It is already implemented correctly.

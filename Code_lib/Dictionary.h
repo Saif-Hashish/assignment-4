@@ -8,6 +8,20 @@
 #include <algorithm>
 #include <cctype>
 
+/********************************************************************************
+ * WARNING: Please do not remove or modify this comment block.
+ *
+ * Student Information:
+ * Name: Saifeldin Rashed Hashish
+ * Student ID: 900233247
+ * Section Number: 1
+ *
+ * Instructions:
+ * - Fill out your name, student ID, and section number above.
+ * - This information is mandatory for the submission of your assignment.
+ * - Do not modify this file beyond the specified tasks and guidelines.
+ *
+ ********************************************************************************/
 using namespace std;
 
 class Dictionary {

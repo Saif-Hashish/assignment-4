@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /Users/Mohamed/Desktop/Fall2024-Assignment-4/Google_tests/lib/googlemock
-# Build directory: /Users/Mohamed/Desktop/Fall2024-Assignment-4/cmake-build-debug/Google_tests/lib/googlemock
+# Source directory: S:/University stuff/assignment-4-Saif-Hashish/Google_tests/lib/googlemock
+# Build directory: S:/University stuff/assignment-4-Saif-Hashish/cmake-build-debug/Google_tests/lib/googlemock
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

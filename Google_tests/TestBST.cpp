@@ -4,6 +4,20 @@
 #include <iostream> // Include for cout
 
 using namespace std;
+/********************************************************************************
+ * WARNING: Please do not remove or modify this comment block.
+ *
+ * Student Information:
+ * Name: Saifeldin Rashed Hashish
+ * Student ID: 900233247
+ * Section Number: 1
+ *
+ * Instructions:
+ * - Fill out your name, student ID, and section number above.
+ * - This information is mandatory for the submission of your assignment.
+ * - Do not modify this file beyond the specified tasks and guidelines.
+ *
+ ********************************************************************************/
 
 // 1. Test Constructor and Empty
 TEST(BSTTest, ConstructorAndEmpty) {

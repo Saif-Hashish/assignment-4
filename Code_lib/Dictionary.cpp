@@ -1,10 +1,10 @@
 /********************************************************************************
- * WARNING: Please do not remove or modify this comment block.
+* WARNING: Please do not remove or modify this comment block.
  *
  * Student Information:
- * Name: ______________________________________
- * Student ID: __________________________________
- * Section Number: ______________________________
+ * Name: Saifeldin Rashed Hashish
+ * Student ID: 900233247
+ * Section Number: 1
  *
  * Instructions:
  * - Fill out your name, student ID, and section number above.
@@ -48,7 +48,21 @@ string Dictionary::toLower(const string &word) const {
 int Dictionary::hammingDistance(const string &a, const string &b) const {
     // Student Task: Implement the hammingDistance function
     // TODO: Compare the characters of `a` and `b` to determine how many are different.
+    // get the length of the shorter string and store it
+    int length = min(a.length(), b.length());
+    //initialize result to 0 this will count number of different letters
+    int result = 0;
+
+    // loop on lower length of string
+    for (int i = 0; i < length; i++) {
+        //if letters are different increment result
+        if (a[i] != b[i])
+            result++;
+    }
     // TODO: Think about how to handle cases where the strings are not the same length.
+    // if the 2 words are not the same length add absolute difference of the 2 lengths to length as the word with less letters will not contain the letters in longer word
+    result+= abs(int(a.length() - b.length()));
+    return result;
 }
 
 // Constructor
@@ -128,9 +142,16 @@ void Dictionary::saveDictionaryToDisk() {
 // Consider how each of these functions can work together to efficiently add the word to the dictionary.
 void Dictionary::addWord(const string &word) {
     // Student Task: Implement the addWord function
-    // TODO: Use `getIndex` to determine which BST corresponds to the first character of `word`.
     // TODO: Convert `word` to lowercase using `toLower` to maintain consistency.
+     string lowWord = toLower(word);
+    // TODO: Use `getIndex` to determine which BST corresponds to the first character of `word`.
+    int index = getIndex(word[0]);
     // TODO: Use the `insert` method to add the lowercase word to the appropriate BST.
+    // if index is valid
+    if (index != -1) {
+        // insert in bst
+        bstArray[index].insert(lowWord);
+    }
 }
 
 // Student Task: Implement the removeWord function
@@ -142,9 +163,17 @@ void Dictionary::addWord(const string &word) {
 // Think about how these helper functions can be combined to efficiently remove the word from the dictionary.
 void Dictionary::removeWord(const string &word) {
     // Student Task: Implement the removeWord function
-    // TODO: Use `getIndex` to find out which BST corresponds to the first character of `word`.
+
     // TODO: Convert `word` to lowercase using `toLower` for consistent handling.
+    string lowWord = toLower(word);
+    // TODO: Use `getIndex` to find out which BST corresponds to the first character of `word`.
+    int index = getIndex(lowWord[0]);
     // TODO: Use the `remove` method to delete the word from the identified BST.
+    // if index is valid
+    if (index != -1) {
+        //remove the word
+        bstArray[index].remove(lowWord);
+    }
 }
 
 // Student Task: Implement the core part of the spellCheck function
@@ -167,11 +196,23 @@ void Dictionary::spellCheck() {
     while (infile >> word) {
         // Student Task: Implement the logic to handle spelling checks for each word
         // TODO: Convert `word` to lowercase using `toLower`.
+        string lowWord = toLower(word);
         // TODO: Use `getIndex` to find out which BST corresponds to the first character of the `word`.
+        int index = getIndex(lowWord[0]);
         // TODO: Use the `search` function to check if the word is in the dictionary.
-        // TODO: If the word is not found, print "Misspelled: <word>" and call `getClosestWords` to find and display suggestions.
+        // if index is invalid or word is not in dictionary then it is misspelled
+        if (index == -1 || !bstArray[index].search(lowWord)) {
+            // TODO: If the word is not found, print "Misspelled: <word>" and call `getClosestWords` to find and display suggestions.
+            cout << "Misspelled: " << lowWord << endl;
+            vector<string> closestWords = getClosestWords(word);
+            cout << "Here are some suggestions: ";
+            for (int i = 0; i < closestWords.size(); i++) {
+                cout << closestWords[i] << " ";
+            }
+            cout << endl;
+        }
+        }
     }
-}
 
 // Helper: Get Closest Words (based on Hamming Distance)
 vector<string> Dictionary::getClosestWords(const string &word) {
@@ -193,21 +234,35 @@ vector<string> Dictionary::getClosestWords(const string &word) {
     string capturedWord;
     // Student Task: Extract words captured from the stringstream and add them to `candidates`
     // TODO: Read words from `ss` one line at a time.
-    // TODO: Make sure to only add non-empty words to `candidates`.
-
-
-    // Calculate distances and find the closest words
+    while (getline(ss, capturedWord)) {
+        // TODO: Make sure to only add non-empty words to `candidates`.
+        if (!capturedWord.empty()) {
+            candidates.push_back(capturedWord);
+        }
+    }
+    //calculate dist to find closest word
     vector<pair<int, string>> distances;
+
     // Student Task: Calculate Hamming distances for each word and store them
     // TODO: Loop through each word in `candidates` and calculate its Hamming Distance to `word`.
-    // TODO: Store each distance along with the corresponding word in `distances`.
+    for (const auto &candidate : candidates) {
+        // Calculate distances and find the closest words
+            int distance = hammingDistance(word, candidate);
+        // TODO: Store each distance along with the corresponding word in `distances`.
+            distances.emplace_back(distance, candidate);
+        }
 
     // Sort by distance and limit to 5 suggestions
-    // Student Task: Sort the words based on Hamming Distance and limit to the top 5 closest words
-    // TODO: Sort the `distances` vector so that the closest words are at the beginning.
-    // TODO: Select the top 5 closest words (or fewer if there aren't that many) and add them to `closestWords`.
+    // // Student Task: Sort the words based on Hamming Distance and limit to the top 5 closest words
+    // // TODO: Sort the `distances` vector so that the closest words are at the beginning.
+    sort(distances.begin(), distances.end());
+
     vector<string> closestWords;
 
+    // TODO: Select the top 5 closest words (or fewer if there aren't that many) and add them to `closestWords`.
+    for (int i = 0; i < min(5,static_cast<int>(distances.size())); i++) {
+        closestWords.push_back(distances[i].second);
+    }
 
     return closestWords;
 }
@@ -222,9 +277,19 @@ vector<string> Dictionary::getClosestWords(const string &word) {
 // Consider how these existing functions can be combined to efficiently determine if the word is in the dictionary.
 bool Dictionary::containsWord(const std::string& word) {
     // Student Task: Implement the containsWord function
+
     // TODO: Convert `word` to lowercase using `toLower` to ensure case insensitivity.
+    string lowWord = toLower(word);
+
     // TODO: Use `getIndex` to determine the correct BST for the first character of `lowerWord`.
+    int index = getIndex(lowWord[0]);
+
+    // if index invalid return false
+    if (index == -1) {
+        return false;
+    }
     // TODO: Use the `search` function to check if the word is present in the identified BST.
+    return bstArray[index].search(lowWord);
     // TODO: Return the result of the search.
 }
 
@@ -237,7 +302,15 @@ bool Dictionary::containsWord(const std::string& word) {
 // Think about how these functions can be combined to implement this logic efficiently.
 bool Dictionary::isWordInBST(char c, const std::string& word) {
     // Student Task: Implement the isWordInBST function
-    // TODO: Use `getIndex` to get the correct index for the character `c`.
+
     // TODO: Make sure the word is in lowercase using `toLower` before searching.
+    string lowWord = toLower(word);
+    // TODO: Use `getIndex` to get the correct index for the character `c`.
+    int index = getIndex(lowWord[0]);
     // TODO: Use the `search` method of the BST to determine if the word is present.
+    // if index invalid return false
+    if (index == -1) {
+        return false;
+    }
+    return bstArray[index].search(lowWord);
 }
